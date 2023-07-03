@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RandomNameGenerator</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue",
+        Arial,
+        "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans",
+        Meiryo,
+        sans-serif;
+    }
+
+    .box {
+      background-color: rgb(230, 230, 230);
+      width: 50%;
+      border: solid rgb(153, 153, 153) 4px;
+      border-radius: 16px;
+      margin: 120px auto 0;
+      box-shadow: 0 4px 8px 0 rgb(148, 148, 148);
+    }
+
+    button {
+      padding: 4px;
+      background-color: white;
+      margin-top: 20px;
+    }
+
+    .boxContents {
+      text-align: center;
+    }
+
+    ol {
+      padding-left: 52px;
+      list-style-position: inside;
+    }
+
+    .list {
+      width: 240px;
+      text-align: left;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="boxContents">
+      <h2>ボタンを押すと発表する順番を出力します。</h2>
+      <div class="checkbox">
+        <label>名前に「さん」をつける<input type="checkbox" class="honorificCheckbox"></label>
+      </div>
+      <!-- シャッフルの回数を設定するには下記の①式と②、③式のコメントを解除します。 -->
+      <!-- <div>
+        <select>
+        </select>
+      </div> -->
+
+      <button>&lt; 順番を生成する &gt;</button>
+      <div class="list">
+        <ol>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    {
+      //この配列に名前を入れます。名前を追加したり、フルネームに書き換えるとそのまま反映されますので、適宜調整をお願いします。
+      let names = ["name1", "name2", "name3", "name4", "name5", "name6", "name7", "name8", "name9",];
+      const defaultArray =names.concat();
+
+      //②式
+      // for (let i = 1; i < 10; i++) {
+      //   const option = document.createElement('option');
+      //   option.textContent = i;
+      //   document.querySelector('select').appendChild(option);
+      // }
+
+      //配列の要素の末尾に敬称として「さん」をつけます。
+      function arrayHonorific(array) {
+        for(let i = 0; i < array.length; i++) {
+          array[i] = array[i] + "さん";
+        }
+      }
+
+      //前列から場所を選ばずにランダムに配置していくロジック1
+      function arrayShuffle1(array) {
+        for (let i = 0; i < array.length; i++) {
+          const randomIndex = Math.floor(Math.random() * (array.length));
+          const tmp = array[randomIndex];
+          array[randomIndex] = array[i];
+          array[i] = tmp;
+        }
+      }
+        //後列から順次に取り出し交換していくロジック2
+        function arrayShuffle2(array) {
+         for (let i = (array.length - 1); 0 < i; i--) {
+           let r = Math.floor(Math.random() * (i + 1));
+           let tmp = array[i];
+           array[i] = array[r];
+           array[r] = tmp;
+         }
+      }
+
+      //ボタンをクリックすることでli要素を生成し、表示させます。
+      document.querySelector('button').addEventListener('click', () => {
+        if(document.querySelector("input").checked === true) {
+          arrayHonorific(names);
+        }
+        console.log(names);
+        const allList = document.querySelectorAll('li');
+        allList.forEach(li => {
+          li.remove();
+        });
+
+        //while(i < X) X回数だけシャッフルします。①、②、③式をコメントから戻したときは、こちらはコメントアウトしてください。
+        let i = 0
+        while(i < 5) {
+          arrayShuffle1(names);
+          arrayShuffle2(names);
+          i++
+        }
+        //③式
+        // let i = 0
+        // while(i < document.querySelector('select').value) {
+        //   arrayShuffle(names);
+        //   i++
+        // }
+        console.log(i + "回シャッフルしました。")
+        
+        names.forEach(name => {
+          const li = document.createElement('li');
+          li.textContent = name;
+          document.querySelector('ol').appendChild(li);
+        });
+
+        names = [...defaultArray];
+      });
+    }
+  </script>
+</body>
+
+</html>
